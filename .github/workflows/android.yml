@@ -20,13 +20,29 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Setup debug keystore & environment
+      run: |
+        # Decode debug.keystore if base64 file exists, or generate a standard debug keystore
+        if [ -f "debug.keystore.base64" ]; then
+          base64 -d debug.keystore.base64 > debug.keystore
+        elif [ ! -f "debug.keystore" ]; then
+          keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
+        fi
+        
+        # Prepare .env if absent
+        if [ ! -f ".env" ] && [ -f ".env.example" ]; then
+          cp .env.example .env
+        fi
 
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew || true
+      run: chmod +x gradlew
 
-    - name: Build with Gradle
-      run: ./gradlew assembleDebug --stacktrace
+    - name: Build Debug APK with Gradle
+      run: ./gradlew assembleDebug --stacktrace --no-daemon
 
     - name: Upload Debug APK Artifact
       uses: actions/upload-artifact@v4
