@@ -1,0 +1,40 @@
+{
+  "name": "Hephaistos Launcher",
+  "package": "com.hephaistos.launcher",
+  "version": "1.0.0",
+  "description": "Lanceur épuré et orchestrateur de l'écosystème modulaire Hephaistos avec dock macOS M3 et console IPC.",
+  "author": "Hephaistos Ecosystem",
+  "ipc": {
+    "action_command": "com.hephaistos.action.COMMAND",
+    "action_response": "com.hephaistos.action.RESPONSE",
+    "commands": [
+      {
+        "name": "ping",
+        "description": "Vérifie l'état actif du lanceur et son uptime",
+        "args": {},
+        "returns": {
+          "status": "ready",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "name": "list_modules",
+        "description": "Renvoie la liste des modules actuellement détectés par le lanceur",
+        "args": {},
+        "returns": {
+          "modules": "array de packages"
+        }
+      },
+      {
+        "name": "navigate_screen",
+        "description": "Bascule l'affichage du lanceur vers un écran spécifique",
+        "args": {
+          "screen": "string (HOME | CONSOLE | SETTINGS)"
+        },
+        "returns": {
+          "success": "boolean"
+        }
+      }
+    ]
+  }
+}
